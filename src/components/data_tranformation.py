@@ -44,12 +44,13 @@ class DataTransformation:
             cat_pipeline=Pipeline(
                 steps=[
                     ('imputer',SimpleImputer(strategy='most_frequent')),
-                    ('encoding',OneHotEncoder()),
-                    ("scaler",StandardScaler(with_mean=False))
+                    ('encoding',OneHotEncoder(handle_unknown='ignore')),
+                   ## ("scaler",StandardScaler(with_mean=False))
                 ]
             )
             logging.info(f"Categorical Features : {categorical_colms}")
             logging.info(f"Numerical features: {numerical_colms}")
+            
             preprocessor=ColumnTransformer(
                 [
                     ("numerical",num_pipeline,numerical_colms),
@@ -71,16 +72,22 @@ class DataTransformation:
             
             logging.info("Obtaining preprocessing object")
             
+            missing_cols = set(train_df.columns) - set(test_df.columns)
+            if missing_cols:
+                raise CustomException(f"Missing columns in test set: {missing_cols}")
+
             preprocessing_obj=self.get_data_transformation_object()
             
             target_feature="math_score"
+            numerical_columns = ["writing_score", "reading_score"]
+
             input_train_feature = train_df.drop(columns=[target_feature],axis=1)
             target_train_feature=train_df[target_feature]
             
             input_test_feature = test_df.drop(columns=[target_feature],axis=1)
             target_test_feature=test_df[target_feature]
             
-            logging.info("Applying preprocessor on the training and testing dataframe")
+            logging.info(f"Applying preprocessor on the training and testing dataframe")
             
             input_train_arr=preprocessing_obj.fit_transform(input_train_feature)
             input_test_arr=preprocessing_obj.transform(input_test_feature)
@@ -91,7 +98,7 @@ class DataTransformation:
             test_arr=np.c_[ 
                             input_test_arr,np.array(target_test_feature)
                             ]
-            logging.info("Saved preprocessing objext.")
+            logging.info("Saved preprocessing object.")
             
             save_object(
                 file_path=self.data_transformation_config.preprocessor_obj_path,
