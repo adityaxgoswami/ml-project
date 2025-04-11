@@ -1,9 +1,3 @@
-## END TO END ML PROJECT 
-
-Here's a clean, professional `README.md` for your **ML End-to-End Deployment Project** (the one hosted at [https://github.com/adityaxgoswami/ml-project](https://github.com/adityaxgoswami/ml-project)):
-
----
-
 ## 🤖 ML Deployment Pipeline – End-to-End Machine Learning Web App
 
 An end-to-end machine learning pipeline that covers everything from data preprocessing to model deployment. The trained model is wrapped in a Flask API and deployed on **AWS Elastic Beanstalk** for real-time prediction access via a web interface.
